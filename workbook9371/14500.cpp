@@ -1,47 +1,52 @@
 #include<cstdio>
 #include<vector>
-#include<queue>
 
 using namespace std;
 
+int arr[510][510];
 
-
-int bfs4(pair<int,int> p,int n, int m,vector <vector <int>> v,vector <vector <bool>> visited)
+int fetch(int a,int &i, int &j, int n, int m)
 {
-	queue<pair<int,int>> q;
-	q.push(p);
-	visit[p.first][p.second] = true
-	
-	int cnt=0,sum=0;
-	
-	while(!q.empty())
+	switch(a)
 	{
-		int x=q.front().first;
-		int y=q.front().second;
-		q.pop();
-		if(x+1 < n && !visited[x+1][y])
-		{
-			queue(push(make_pair(x+1,y)));
-			visited[x+1][y] = true;
-		}
-		if(x-1 >= 0 && !visited[x-1][y])
-		{
-			queue(push(make_pair(x-1,y)));
-			visited[x-1][y] = true;
-		}
-		if(y+1 < n && !visited[x][y+1])
-		{
-			queue(push(make_pair(x,y+1)));
-			visited[x][y+1] = true;
-		}
-		if(y-1 >= 0 && !visited[x][y-1])
-		{
-			queue(push(make_pair(x,y-1)));
-			visited[x][y-1] = true;
-		}
-		sum+=v[p.first][p.second];
-		cnt++;
-		
+		case 0:
+			if(j+1 >= m) break;
+			return arr[i][++j];
+			break;
+		case 1:
+			if(i+1 >=n) break;
+			return arr[++i][j];
+			break;
+		case 2:
+			if(j-1 <0) break;
+			return arr[i][--j];
+			break;
+		case 3:
+			if(i-1 < 0) break;
+			return arr[--i][j];
+			break;
+			
+	}
+	return -1;
+}
+
+int backward(int a,int &i,int &j)
+{
+	switch(a)
+	{
+		case 0:
+			j--;
+			break;
+		case 1:
+			i--;
+			break;
+		case 2:
+			j++;
+			break;
+		case 3:
+			i++;
+			break;
+			
 	}
 }
 
@@ -49,21 +54,112 @@ int main()
 {
 	int n,m;
 	scanf("%d %d",&n,&m);
-	vector <vector <int>> v(n,(vector<int>(m,0)));
-	vector <vector <bool>> visited(n,(vector<bool>(m,false)));
 	for(int i=0;i<n;i++)
 	{
 		for(int j=0;j<m;j++)
 		{
-			scanf("%d",&v[i][j]);
+			scanf("%d",&arr[i][j]);
 		}
 	}
+	int max=0;
 	for(int i=0;i<n;i++)
 	{
 		for(int j=0;j<m;j++)
 		{
-			int max = 0,sum=0;
-			sum
+			int sum=0,cnt=0;
+			int &x=i,&y=j;
+			sum += arr[x][y];
+			/*
+			for(int k=0;k<4;k++)
+			{
+				int val_k;
+				val_k = fetch(k,x,y,n,m);
+				if(val_k >= 0) sum += val_k;
+				else continue;
+				for(int l=0;l<4;l++)
+				{
+					if((l+2)%4==k) continue;
+					int val_l = fetch(l,x,y,n,m);
+					if(val_l >= 0) sum += val_l;
+					else continue;
+					for(int o=0;o<4;o++)
+					{
+						if((o+2)%4==l) continue;
+						int val_o = fetch(o,x,y,n,m);
+						if(val_o >= 0) sum += val_o;
+						else continue;
+						if(sum > max)
+						{
+							max=sum;
+							printf("%d %d,i,j);
+						}
+						sum -= val_o;
+						backward(o,x,y);
+					}
+					sum -= val_l;
+					backward(l,x,y);
+				}
+				sum -= val_k;
+				backward(k,x,y);
+			}
+			*/
+			if(i+3<n)
+			{
+				sum = arr[i][j] + arr[i+1][j] + arr[i+2][j] + arr[i+3][j];
+				if(sum>max) max=sum;
+			}
+			if(j+3<m)
+			{
+				sum = arr[i][j] + arr[i][j+1] + arr[i][j+2] + arr[i][j+3];
+				if(sum>max) max=sum;
+			}
+			
+			if(i+2<n && j+1<m)
+			{
+				sum = arr[i][j] + arr[i+1][j] + arr[i+2][j] + arr[i+1][j+1];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i+1][j] + arr[i+2][j] + arr[i+2][j+1];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i][j+1] + arr[i+1][j+1] + arr[i+2][j+1];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i+1][j] + arr[i+1][j+1] + arr[i+2][j+1];
+				if(sum>max) max=sum;
+			}
+			if(i+2<n && j-1>=0)
+			{
+				sum = arr[i][j] + arr[i+1][j] + arr[i+2][j] + arr[i+1][j-1];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i+1][j] + arr[i+2][j] + arr[i+2][j-1];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i][j-1] + arr[i+1][j-1] + arr[i+2][j-1];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i+1][j] + arr[i+1][j-1] + arr[i+2][j-1];
+				if(sum>max) max=sum;
+			}
+			if(j+2<m && i+1<n)
+			{
+				sum = arr[i][j] + arr[i][j+1] + arr[i][j+2] + arr[i+1][j+1];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i][j+1] + arr[i][j+2] + arr[i+1][j+2];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i+1][j] + arr[i+1][j+1] + arr[i+1][j+2];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i][j+1] + arr[i+1][j+1] + arr[i+1][j+2];
+				if(sum>max) max=sum;
+			}
+			if(j+2<m && i-1>=0)
+			{
+				sum = arr[i][j] + arr[i][j+1] + arr[i][j+2] + arr[i-1][j+1];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i][j+1] + arr[i][j+2] + arr[i-1][j+2];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i-1][j] + arr[i-1][j+1] + arr[i-1][j+2];
+				if(sum>max) max=sum;
+				sum = arr[i][j] + arr[i][j+1] + arr[i-1][j+1] + arr[i-1][j+2];
+				if(sum>max) max=sum;
+			}
+			
 		}
 	}
+	printf("%d",max);
 }
