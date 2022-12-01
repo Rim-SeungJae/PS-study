@@ -158,8 +158,17 @@ int main()
 				sum = arr[i][j] + arr[i][j+1] + arr[i-1][j+1] + arr[i-1][j+2];
 				if(sum>max) max=sum;
 			}
-			
+			if(i+1<n && j+1<n)
+			{
+				sum = arr[i][j] + arr[i][j+1] + arr[i+1][j+1] + arr[i+1][j];
+				if(sum>max) max=sum;
+			}
 		}
 	}
 	printf("%d",max);
 }
+/*
+브루트포스
+단순하게 모든 경우를 코드로 작성하였음.
+더 좋은 방법이 없을까?
+*/ 
