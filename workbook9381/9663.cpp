@@ -1,12 +1,22 @@
-#include <stdio.h>
-#include <stdbool.h>
-#include <stdlib.h>
+#include <cstdio>
+#include <vector>
 
-int search(int n,int remain,int row[],int dia1[],int dia2[])
+using namespace std;
+
+bool isFound = false;
+int row[10010],dia1[20020],dia2[20020];
+
+void search(int n,int remain,vector<int> result)
 {
+	if(isFound) return;
     if(remain == 0)
     {
-        return 1;
+    	isFound=true;
+    	for(int i=0;i<result.size();i++)
+    	{
+    		printf("%d\n",result[i]);
+		}
+        return;
     }
     int col_idx = n-remain, sum=0;
     for(int i=0;i<n;i++)
@@ -17,27 +27,22 @@ int search(int n,int remain,int row[],int dia1[],int dia2[])
             row[row_idx] =1;
             dia1[row_idx+col_idx] = 1;
             dia2[row_idx-col_idx+n-1] = 1;
-            sum += search(n,remain-1,row,dia1,dia2);
+            result.push_back(row_idx);
+            search(n,remain-1,result);
+            if(isFound) return;
+            result.pop_back();
             row[row_idx] =0;
             dia1[row_idx+col_idx] = 0;
             dia2[row_idx-col_idx+n-1] = 0;
         }
     }
-    return sum;
-}
-
-int solution(int n) {
-    int answer = 0;
-    int row[20] = {0,},dia1[100]={0,},dia2[100]={0,};
-    answer = search(n,n,row,dia1,dia2);
-    return answer;
 }
 
 int main()
 {
 	int n;
 	scanf("%d",&n);
-	printf("%d",solution(n));
+	search(n,n,vector<int>());
 }
 /*
 백트래킹
