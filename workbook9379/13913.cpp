@@ -13,7 +13,14 @@ struct cmp{
 };
 
 int dist[2000010];
+int prv[2000010]; 
 bool visited[2000010];
+
+void prt(int tmp){
+	if(tmp == -1) return;
+	prt(prv[tmp]);
+	printf("%d ",tmp);
+}
 
 int main()
 {
@@ -21,12 +28,10 @@ int main()
 	priority_queue<pair<int,int>> pq;
 	scanf("%d %d",&n,&k);
 	pq.push(make_pair(0,n));
-	if(n>k){
-		printf("%d",n-k);
-		return 0;
-	}
 	
-	fill(dist,dist+200001,k-n);
+	fill(dist,dist+200001,abs(n-k)+1);
+	fill(prv,prv+200001,-1);
+	dist[n] = 0;
 	
 	while(!pq.empty())
 	{
@@ -37,23 +42,26 @@ int main()
 		if(min_idx+1 < 200001 && dist[min_idx+1] > min_cost+1)
 		{
 			dist[min_idx+1] = min_cost + 1;
+			prv[min_idx+1] = min_idx;
 			pq.push(make_pair(-dist[min_idx+1],min_idx+1));
 		}
 		if(min_idx-1>=0 && dist[min_idx-1] > min_cost+1)
 		{
 			dist[min_idx-1] = min_cost + 1;
+			prv[min_idx-1] = min_idx;
 			pq.push(make_pair(-dist[min_idx-1],min_idx-1));
 		}
-		if(2*min_idx < 200001 && dist[min_idx * 2] > min_cost)
+		if(2*min_idx < 200001 && dist[min_idx * 2] > min_cost + 1)
 		{
-			dist[min_idx * 2] =  min_cost;
+			dist[min_idx * 2] =  min_cost + 1;
+			prv[min_idx * 2] = min_idx;
 			pq.push(make_pair(-dist[min_idx * 2],min_idx * 2));
 		}
 	}
-	printf("%d",dist[k]);
+	printf("%d\n",dist[k]);
+	prt(k);
 } 
 /*
 다익스트라 알고리즘
-priority queue의 사용법과 다익스트라 알고리즘의 구현에 유의하자
-범위(100000)를 벗어나지 않고 반드시 최적해를 찾을 수 있음을 증명할 수 있다. 
-*/
+13549번 문제에 경로를 출력하는 조건이 추가되었다. 
+*/ 
