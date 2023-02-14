@@ -1,46 +1,79 @@
 #include<cstdio>
-#include<vector>
 
-using namespace std;
+int n,m;
+char arr[60][60];
+bool visited[60][60],result;
 
-vector<vector<int>> graph;
-vector<int> v;
-bool check[100010];
-int idx;
-
-void dfs(int x)
+void dfs(int dir,int x,int y,int depth)
 {
-	if(check[x] == true){
-		return;
-	}
-	check[x] = true;
-	for(int i=0;i<graph[x].size();i++)
+	//printf("%d %d %d\n",x,y,result);
+	if(dir!=1 && x-1>=0 && arr[x-1][y] == arr[x][y])
 	{
-		if(check[graph[x][i]] == false && graph[x][i] == v[idx+1]){
-			idx++;
-			printf("%d %d\n",idx,graph[x][i]);
-			dfs(graph[x][i]);
+		if(visited[x-1][y])
+		{
+			if(depth>=3) result=true;
+		}
+		else{
+			visited[x-1][y] = true;
+			dfs(0,x-1,y,depth+1);
+		}
+	}
+	if(dir!=0 && x+1<n && arr[x+1][y] == arr[x][y])
+	{
+		if(visited[x+1][y])
+		{
+			if(depth>=3) result=true;
+		}
+		else{
+			visited[x+1][y] = true;
+			dfs(1,x+1,y,depth+1);
+		}
+	}
+	if(dir!=3 && y-1>=0 && arr[x][y-1] == arr[x][y])
+	{
+		if(visited[x][y-1])
+		{
+			if(depth>=3) result=true;
+		}
+		else{
+			visited[x][y-1] = true;
+			dfs(2,x,y-1,depth+1);
+		}
+	}
+	if(dir!=2 && y+1<m && arr[x][y+1] == arr[x][y])
+	{
+		if(visited[x][y+1])
+		{
+			if(depth>=3) result=true;
+		}
+		else{
+			visited[x][y+1] = true;
+			dfs(3,x,y+1,depth+1);
 		}
 	}
 }
 
 int main()
 {
-	int n;
-	scanf("%d",&n);
-	graph.assign(n+1,vector<int>());
-	for(int i=0;i<n-1;i++)
+	scanf("%d %d",&n,&m);
+	for(int i=0;i<n;i++)
 	{
-		int s,d;
-		scanf("%d %d",&s,&d);
-		graph[s].push_back(d);
+		scanf("\n");
+		for(int j=0;j<m;j++)
+		{
+			scanf("%1c",&arr[i][j]);
+		}
 	}
 	for(int i=0;i<n;i++)
 	{
-		int tmp;
-		scanf("%d",&tmp);
-		v.push_back(tmp);
+		for(int j=0;j<m;j++)
+		{
+			if(!visited[i][j]) dfs(-1,i,j,1);
+		}
 	}
-	dfs(1);
-	printf("%d",idx);
+	result?printf("Yes"):printf("No");
 }
+/*
+기본적인 dfs 변형
+사이클 탐지 알고리즘에 대해 공부해보아도 좋다 
+*/ 
