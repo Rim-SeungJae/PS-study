@@ -11,13 +11,17 @@ int main()
 		int coin;
 		scanf("%d",&coin);
 		if(coin>k) continue;
-		arr[coin] += 1;
+		arr[coin] = 1;
 		for(int j=coin+1;j<=k;j++)
 		{
-			arr[j] += arr[j-coin];
+			if(arr[j-coin] != 0 && (arr[j] == 0 || arr[j] > arr[j-coin]+1))
+			{
+				arr[j] = arr[j-coin] + 1;
+			}
 		}
 	}
-	printf("%d",arr[k]);
+	if(arr[k] == 0) printf("-1");
+	else printf("%d",arr[k]);
 }
 /*
 ´ÙÀÌ³ª¹Í
