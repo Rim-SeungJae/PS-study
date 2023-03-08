@@ -153,7 +153,7 @@ void DFS(int x, int y, int Dir, int Sum)
 	{
 		for(int j=0;j<4;j++)
 		{
-			printf("%d(%d) ",MAP[i][j],MAP[i][j]);
+			printf("%d(%d) ",MAP[i][j],Fish[MAP[i][j]].Dir);
 		}
 		printf("\n");
 	}

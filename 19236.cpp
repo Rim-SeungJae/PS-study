@@ -49,15 +49,6 @@ bool inRange(int a)
 
 void bt(vector<Pos> param1, Fish param2[][5])
 {	
-	for(int i=0;i<4;i++)
-	{
-		for(int j=0;j<4;j++)
-		{
-			printf("%d(%d) ",param2[i][j].a+1,param2[i][j].b+1);
-		}
-		printf("\n");
-	}
-	printf("\n");
 	if(total > max_total) max_total = total;
 	vector<Pos> pos = param1;
 	Fish arr[5][5];
@@ -75,14 +66,26 @@ void bt(vector<Pos> param1, Fish param2[][5])
 		int src_b = arr[r][c].b;
 		int dst_a = arr[r+dirr[src_b]][c+dirc[src_b]].a;
 		int dst_b = arr[r+dirr[src_b]][c+dirc[src_b]].b;
-		Pos tmp_pos = pos[i];
-		pos[i] = pos[dst_a];
-		pos[dst_a] = tmp_pos;
+		pos[i] = Pos(r+dirr[src_b],c+dirc[src_b]);
+		if(pos[dst_a].r>=0)pos[dst_a] = Pos(r,c);
 		//printf("%d:%d %d <-> %d:%d %d\n",i+1,r,c,dst_a+1,r + dirr[arr[r][c].b],c + dirc[arr[r][c].b]);
 		arr[r][c].a = dst_a;
 		arr[r][c].b = dst_b;
 		arr[r + dirr[src_b]][c + dirc[src_b]].a = src_a;
 		arr[r + dirr[src_b]][c + dirc[src_b]].b = src_b;
+		/*
+		for(int i=0;i<4;i++)
+		{
+			for(int j=0;j<4;j++)
+			{
+				printf("%d(%d) ",arr[i][j].a+1,arr[i][j].b+1);
+			}
+			printf("\n");
+		}
+		printf("%d %d\n",shark.r,shark.c);
+		for(int j=0;j<pos.size();j++) printf("%d ",pos[j].r);
+		printf("\n");
+		*/
 	}
 	for(int i=1;inRange(shark.r+dirr[shark.b] * i) && inRange(shark.c + dirc[shark.b] * i);i++)
 	{
@@ -131,7 +134,11 @@ int main()
 	shark.r = 0;
 	shark.c = 0;
 	shark.b = arr[0][0].b;
-	pos[arr[0][0].a].r = pos[arr[0][0].a].c = -1;
+	pos[arr[0][0].a].r = -1;
+	pos[arr[0][0].a].c = -1;
 	bt(pos,arr);
 	printf("%d",max_total);
 } 
+/*
+복잡한 구현, 시뮬레이션
+*/ 
