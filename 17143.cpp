@@ -26,6 +26,17 @@ class Shark{
 
 vector<Shark> sharks;
 
+bool inR(int a)
+{
+	if(a>=0 && a<R) return true;
+	else return false;
+}
+bool inC(int a)
+{
+	if(a>=0 && a<C) return true;
+	else return false;
+}
+
 int main()
 {
 	scanf("%d %d %d",&R,&C,&M);
@@ -41,6 +52,7 @@ int main()
 	for(int i=0;i<C;i++)
 	{
 		/*
+		
 		for(int j=0;j<R;j++)
 		{
 			for(int k=0;k<C;k++)
@@ -51,6 +63,7 @@ int main()
 		}
 		printf("\n");
 		*/
+		
 		// 1 & 2
 		for(int j=0;j<R;j++)
 		{
@@ -69,39 +82,42 @@ int main()
 		{
 			if(sharks[j].eaten) continue;
 			int src_r = sharks[j].r, src_c = sharks[j].c;
-			sharks[j].r += (dirr[sharks[j].d] * sharks[j].s) % (R * 2 );
-			if(sharks[j].r < 0)
+			sharks[j].r += (dirr[sharks[j].d] * sharks[j].s);
+			while(true)
 			{
-				sharks[j].r = -sharks[j].r;
-				sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
+				if(sharks[j].r < 0)
+				{
+					sharks[j].r = -sharks[j].r;
+					sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
+					continue;
+				}
+				if(sharks[j].r >= R)
+				{
+					sharks[j].r = (R - (sharks[j].r - R) - 2);
+					sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
+					continue;
+				}
+				break;
 			}
-			if(sharks[j].r >= R)
+			sharks[j].c += (dirc[sharks[j].d] * sharks[j].s);
+			while(true)
 			{
-				sharks[j].r = (R - (sharks[j].r - R) - 2);
-				sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
-			}
-			if(sharks[j].r < 0)
-			{
-				sharks[j].r = -sharks[j].r;
-				sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
-			}
-			sharks[j].c += (dirc[sharks[j].d] * sharks[j].s) % (C * 2 );
-			if(sharks[j].c < 0)
-			{
-				sharks[j].c = -sharks[j].c;
-				sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
-			}
-			if(sharks[j].c >= C)
-			{
-				sharks[j].c = (C - (sharks[j].c - C) - 2);
-				sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
-			}
-			if(sharks[j].c < 0)
-			{
-				sharks[j].c = -sharks[j].c;
-				sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
+				if(sharks[j].c < 0)
+				{
+					sharks[j].c = -sharks[j].c;
+					sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
+					continue;
+				}
+				if(sharks[j].c >= C)
+				{
+					sharks[j].c = (C - (sharks[j].c - C) - 2);
+					sharks[j].d  = (sharks[j].d/2)*2 + (sharks[j].d+1)%2;
+					continue;
+				}
+				break;
 			}
 			int dst_r = sharks[j].r, dst_c = sharks[j].c;
+			//if(!inR(src_r)) return 0;
 			if(new_arr[dst_r][dst_c] == 0)
 			{
 				new_arr[dst_r][dst_c] = arr[src_r][src_c];
@@ -117,10 +133,14 @@ int main()
 					sharks[arr[src_r][src_c]].eaten = true;
 				}
 			}
-			printf("%d %d -> %d %d\n",src_r,src_c,dst_r,dst_c);
+			//printf("%d %d -> %d %d\n",src_r,src_c,dst_r,dst_c);
 		}
 		copy(&new_arr[0][0],&new_arr[109][110],&arr[0][0]);
 		
 	}
 	printf("%d",total);
 }
+/*
+구현, 시뮬레이션 
+괜히 시간초과 걱정하다가 오래걸린 문제
+*/ 
