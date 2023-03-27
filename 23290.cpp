@@ -87,7 +87,6 @@ int main()
 			int r = shark_r;
 			int c = shark_c;
 			bool i_flag= false;
-			visited[r][c] = true;
 			int sum = 0;
 			if(!inRange(r + s_dirr[i]) || !inRange(c + s_dirc[i])) continue;
 			if(!visited[r + s_dirr[i]][c + s_dirc[i]])
@@ -173,7 +172,7 @@ int main()
 		}
 
 	}
-	int result = 0;
+	long long int result = 0;
 	for(int i=1;i<=4;i++)
 	{
 		for(int j=1;j<=4;j++)
@@ -181,5 +180,5 @@ int main()
 			result += arr[i][j].size();
 		}
 	}
-	printf("%d",result);
+	printf("%lld",result);
 }
