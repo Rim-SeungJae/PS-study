@@ -10,6 +10,7 @@ bool arr[1010][1010];
 
 typedef struct node{
 	int r,c,broke,d;
+	bool day;
 }Node;
 
 
@@ -119,7 +120,8 @@ int bfs()
 
 int main()
 {
-	scanf("%d %d %d",&n,&m,&k);
+	scanf("%d %d",&n,&m);
+	k=1; 
 	for(int i=0;i<n;i++)
 	{
 		for(int j=0;j<m;j++)
@@ -129,7 +131,3 @@ int main()
 	}
 	printf("%d",bfs());
 }
-/*
-queue에 vector를 사용하면 시간초과가 난다.
-vector의 복사에는 엄청난 시간이 걸린다는 사실을 항상 인지할것
-*/ 
