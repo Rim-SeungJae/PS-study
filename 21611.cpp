@@ -61,13 +61,13 @@ int main()
 			marbles.push_back(arr[r][c]);
 		}
 	}
-	/*
+	
 	for(int i=0;i<marbles.size();i++)
 	{
 		printf("%d ",marbles[i]);
 	}
 	printf("\n");
-	*/
+	
 	for(int t=0;t<m;t++)
 	{
 		// 1
