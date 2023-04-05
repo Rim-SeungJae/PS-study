@@ -8,7 +8,7 @@ using ii = pair<int,int>;
 vector<ii> check,warmer;
 const int dirr[4] = {0,0,-1,1},dirc[4]={1,-1,0,0};
 int R,C,K,W,arr[22][22],temp[22][22];
-bool wall[2][22][22];
+bool wall[2][44][44];
 
 void blow()
 {
@@ -20,10 +20,14 @@ void blow()
 		c = warmer[i].second;
 		d = arr[r][c] - 1;
 		int d_vert0 = ((d/2)+1)%2*2,d_vert1 = ((d/2)+1)%2*2+1;
-		r = r+dirr[d];
-		c = c+dirc[d];
-		temp[r][c] += 5;
-		visited[r][c] = true;
+		if(!wall[((d/2)+1)%2][r+(d==3)][c-(d==1)])
+		{
+			r = r+dirr[d];
+			c = c+dirc[d];
+			temp[r][c] += 5;
+			visited[r][c] = true;
+		}
+		else continue;
 		for(int i=0;i<4;i++)
 		{
 			if(visited[r][c])
@@ -162,7 +166,7 @@ void trans()
 				new_temp[i][j] += (temp[i+1][j] - temp[i][j])/4;
 				new_temp[i+1][j] -= (temp[i+1][j] - temp[i][j])/4;
 			}
-			else if(i+1<R && temp[i][j]>temp[i+1][j] && !wall[0][i+1][j])
+			if(i+1<R && temp[i][j]>temp[i+1][j] && !wall[0][i+1][j])
 			{
 				new_temp[i+1][j] += (temp[i][j] - temp[i+1][j])/4;
 				new_temp[i][j] -= (temp[i][j] - temp[i+1][j])/4;
@@ -172,7 +176,7 @@ void trans()
 				new_temp[i][j] += (temp[i][j+1] - temp[i][j])/4;
 				new_temp[i][j+1] -= (temp[i][j+1] - temp[i][j])/4;
 			}
-			else if(j+1<C && temp[i][j]>temp[i][j+1] && !wall[1][i][j])
+			if(j+1<C && temp[i][j]>temp[i][j+1] && !wall[1][i][j])
 			{
 				new_temp[i][j+1] += (temp[i][j] - temp[i][j+1])/4;
 				new_temp[i][j] -= (temp[i][j] - temp[i][j+1])/4;
@@ -228,7 +232,7 @@ int main()
 		scanf("%d %d %d",&x,&y,&t);
 		wall[t][x-1][y-1] = 1;
 	}
-	do{
+	while(chocolate<101){
 		blow();
 		/*
 		for(int i=0;i<R;i++)
@@ -243,11 +247,12 @@ int main()
 		trans();
 		dec();
 		chocolate++;
-	}while(!tempCheck() && chocolate<101);
+		if(tempCheck()) break;
+	}
 	/*
-	for(int i=0;i<R;i++)
+	for(int i=0;i<22;i++)
 	{
-		for(int j=0;j<C;j++)
+		for(int j=0;j<22;j++)
 		{
 			printf("%d ",temp[i][j]);
 		}
