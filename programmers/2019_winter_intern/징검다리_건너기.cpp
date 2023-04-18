@@ -26,3 +26,7 @@ int solution(vector<int> stones, int k) {
     }
     return answer;
 }
+/*
+연관컨테이너는 값을 단순 저장만 하는 것이 아니라,
+항상 정렬된 결과를 얻을 수 있다는 사실을 기억하자
+*/ 
