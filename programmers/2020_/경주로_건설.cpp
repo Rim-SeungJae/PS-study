@@ -69,3 +69,8 @@ int solution(vector<vector<int>> board) {
     else answer = visited[0][n-1][n-1];
     return answer;
 }
+/*
+bfs + dp
+문제의 조건을 잘 확인할 것
+시작점의 우측 및 하단 칸이 항상 비어있다는 전제가 없다.
+*/ 
