@@ -42,3 +42,6 @@ int solution(int cacheSize, vector<string> cities) {
     }
     return answer;
 }
+/*
+쉬운 구현
+*/ 
