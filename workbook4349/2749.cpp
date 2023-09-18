@@ -1,15 +1,37 @@
 #include<cstdio>
+#include<algorithm>
+using namespace std;
+
+void mat_mult(long long a[][2],long long b[][2])
+{
+	int tmp[2][2]={0,};
+	for(int i=0;i<2;i++)
+	{
+		for(int j=0;j<2;j++)
+		{
+			for(int k=0;k<2;k++)
+			{
+				tmp[i][j] += (a[i][k] * b[k][j])%1000000;
+				tmp[i][j] %= 1000000;
+			}
+		}
+	}
+	copy(&tmp[0][0],&tmp[1][2],&a[0][0]);
+}
 
 int main()
 {
-	long long n;
-	int fib0 = 0, fib1 = 1, fib2;
+	long long n, res[2][2] = {{1,1},{1,0}}, iden[2][2] = {{1,1},{1,0}};
 	scanf("%lld",&n);
-	for(long long i=2;i<=n;i++)
+	while(n)
 	{
-		fib2 = (fib0 + fib1)%1000000;
-		fib0 = fib1;
-		fib1 = fib2;
+		if(n&1 != 0) mat_mult(res,iden);
+		mat_mult(iden,iden);
+		n >>= 1;
+		
 	}
-	printf("%d",fib2);
+	printf("%lld",res[1][1]);
 }
+/*
+분할정복을 이용한 거듭제곱 응용: 피보나치 수열
+*/ 
