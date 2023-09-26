@@ -3,11 +3,11 @@
 
 using namespace std;
 
-int arr[100010];
 
 int main()
 {
 	int n,l,r,res = 2000000001,l_mem,r_mem;
+	int arr[100010];
 	scanf("%d",&n);
 	l = l_mem = 0;
 	r = r_mem = n-1;
@@ -17,14 +17,19 @@ int main()
 	}
 	while(r>l)
 	{
-		if(abs(arr[l] + arr[r]) < res)
+		int tmp = abs(arr[l] + arr[r]);
+		if(tmp < res)
 		{
-			res = abs(arr[l] + arr[r]);
+			res = tmp;
 			l_mem = l;
 			r_mem = r;
 		}
+		if(res == 0) break;
 		if(arr[l] + arr[r] > 0) r--;
 		else l++;
 	}
 	printf("%d %d",arr[l_mem],arr[r_mem]);
 }
+/*
+ดÜผ๘วั two-pointer
+*/ 

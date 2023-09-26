@@ -50,3 +50,6 @@ int main()
 		printf("%d\n",is_pelindrom(a,b));
 	}
 }
+/*
+manacher 알고리즘을 활용한 최적의 풀이가 가능하다 참고할것
+*/ 
