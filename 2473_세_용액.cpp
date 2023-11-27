@@ -60,4 +60,4 @@ int main()
 	}
 	printf("%d %d %d",arr[zero_idx[0]],arr[zero_idx[1]],arr[zero_idx[2]]);
 }
-
+//
