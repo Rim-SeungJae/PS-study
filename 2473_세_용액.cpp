@@ -1,6 +1,5 @@
 #include<cstdio>
 #include<algorithm>
-#include<cmath>
 
 using namespace std;
 
@@ -13,14 +12,16 @@ int main()
 		scanf("%d",&arr[i]);
 	}
 	sort(&arr[0],&arr[n]);
-	int sum,l,r,m,close,close_idx,zero = 2000000001,zero_idx[3];
+	int l,r,m,close_idx,zero_idx[3];
+	long long close,zero,sum;
+	bool zero_flag = true, close_flag = true;
 	l = 0;
 	r = n-1;
 	while(r>l+1)
 	{
 		sum = arr[l] + arr[r];
 		int tmpl = l+1,tmpr = r-1;
-		close = 2000000001;
+		close_flag = true;
 		close_idx = -1;
 		while(tmpl<=tmpr)
 		{
@@ -31,15 +32,16 @@ int main()
 				close_idx = m;
 				break;
 			}
-			if(abs(((double)sum+close)/(sum+arr[m])) > 1)
+			if(close_flag || abs(((double)sum+close)/(sum+arr[m])) > 1)
 			{
+				close_flag = false;
 				close = arr[m];
 				close_idx = m;
 			}
 			if(sum+arr[m]>0) tmpr = m-1;
 			else tmpl = m+1;
 		}
-		//printf("%d %d %d\n",arr[l],arr[r],close);
+		printf("%d %d %d\n",arr[l],arr[r],close);
 		if(sum+close == 0)
 		{
 			zero = 0;
@@ -48,14 +50,16 @@ int main()
 			zero_idx[2] = r;
 			break;
 		}
-		if(abs((double)zero/(sum+close)) > 1)
+		if(zero_flag || abs((double)zero/(sum+close)) > 1)
 		{
+			zero_flag = false;
 			zero = sum+close;
 			zero_idx[0] = l;
 			zero_idx[1] = close_idx;
 			zero_idx[2] = r;
 		}
-		if(sum+close>0) r--;
+		//printf("%d %d %d\n",zero_idx[0],zero_idx[1],zero_idx[2]);
+		if(r - close_idx>close_idx - l) r--;
 		else l++;
 	}
 	printf("%d %d %d",arr[zero_idx[0]],arr[zero_idx[1]],arr[zero_idx[2]]);
