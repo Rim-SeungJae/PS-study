@@ -3,105 +3,47 @@
 
 using namespace std;
 
+int ccw(long long x1,long long y1,long long x2,long long y2,long long x3,long long y3)
+{
+	long long v_x1 = x2-x1,v_y1 = y2-y1,v_x2 = x3-x2,v_y2 = y3-y2;
+	long long ccw = v_x1*v_y2 - v_x2*v_y1
+	if(ccw>0) return 1;
+	else if(ccw==0) return 0;
+	else return -1;
+}
+
 int main()
 {
 	long long x1,x2,x3,x4,y1,y2,y3,y4;
 	scanf("%lld %lld %lld %lld\n%lld %lld %lld %lld",&x1,&y1,&x2,&y2,&x3,&y3,&x4,&y4);
-	long double grad1,grad2,c1,c2;
-	bool flag1=false,flag2=false,is_ver1=false,is_ver2=false;
-	if(x1-x2==0) is_ver1 =true;
-	else
+	int ccw1,ccw2,ccw3,ccw4;
+	ccw1 = ccw(x1,y1,x2,y2,x3,y3);
+	ccw2 = ccw(x1,y1,x2,y2,x4,y4);
+	ccw3 = ccw(x3,y3,x4,y4,x1,y1);
+	ccw4 = ccw(x3,y3,x4,y4,x2,y2);
+	
+	if(ccw1 * ccw2 == 0 && ccw3 * ccw4 == 0)
 	{
-		grad1 = (double)(y1-y2) / (x1-x2);
+			if(y1>=y3&&y1<=y4) result = true;
+			else if(y1<=y3&&y1>=y4) result = true;
+			else if(y2<=y3&&y2>=y4) result = true;
+			else if(y2<=y3&&y2>=y4) result = true;
+			else if(y3>=y1&&y3<=y2) result = true;
+			else if(y3<=y1&&y3>=y2) result = true;
+			else if(y4<=y1&&y4>=y2) result = true;
+			else if(y4<=y1&&y4>=y2) result = true;
+			else if(x1>=x3&&x1<=x4) result = true;
+			else if(x1<=x3&&x1>=x4) result = true;
+			else if(x2<=x3&&x2>=x4) result = true;
+			else if(x2<=x3&&x2>=x4) result = true;
+			else if(x3>=x1&&x3<=x2) result = true;
+			else if(x3<=x1&&x3>=x2) result = true;
+			else if(x4<=x1&&x4>=x2) result = true;
+			else if(x4<=x1&&x4>=x2) result = true;
 	}
-	if(x3-x4==0) is_ver2=true;
-	else
+	else if(ccw1 * ccw2 <= 0 && ccw3 * ccw4 <= 0)
 	{
-		grad2 = (double)(y3-y4)/(x3-x4);
-	}
-	if(grad1 == grad2)
-	{
-		if(is_ver1)
-		{
-			if(x1 != x3) flag1 = flag2 = false;
-			else if(y1>=y3&&y1<=y4) flag1 = flag2 = true;
-			else if(y1<=y3&&y1>=y4) flag1 = flag2 = true;
-			else if(y2<=y3&&y2>=y4) flag1 = flag2 = true;
-			else if(y2<=y3&&y2>=y4) flag1 = flag2 = true;
-			else if(y3>=y1&&y3<=y2) flag1 = flag2 = true;
-			else if(y3<=y1&&y3>=y2) flag1 = flag2 = true;
-			else if(y4<=y1&&y4>=y2) flag1 = flag2 = true;
-			else if(y4<=y1&&y4>=y2) flag1 = flag2 = true;
-		}
-		else if(grad1 == 0)
-		{
-			if(y1 != y3) flag1 = flag2 = false;
-			else if(x1>=x3&&x1<=x4) flag1 = flag2 = true;
-			else if(x1<=x3&&x1>=x4) flag1 = flag2 = true;
-			else if(x2<=x3&&x2>=x4) flag1 = flag2 = true;
-			else if(x2<=x3&&x2>=x4) flag1 = flag2 = true;
-			else if(x3>=x1&&x3<=x2) flag1 = flag2 = true;
-			else if(x3<=x1&&x3>=x2) flag1 = flag2 = true;
-			else if(x4<=x1&&x4>=x2) flag1 = flag2 = true;
-			else if(x4<=x1&&x4>=x2) flag1 = flag2 = true;
-		}
-		else
-		{
-			c1 = y1 - grad1 * x1;
-			c2 = y3 - grad2 * x3;
-			if(abs(c1-c2)>0.000000001) flag1 = flag2 = false;
-			else if(x1>=x3&&x1<=x4) flag1 = flag2 = true;
-			else if(x1<=x3&&x1>=x4) flag1 = flag2 = true;
-			else if(x2<=x3&&x2>=x4) flag1 = flag2 = true;
-			else if(x2<=x3&&x2>=x4) flag1 = flag2 = true;
-			else if(x3>=x1&&x3<=x2) flag1 = flag2 = true;
-			else if(x3<=x1&&x3>=x2) flag1 = flag2 = true;
-			else if(x4<=x1&&x4>=x2) flag1 = flag2 = true;
-			else if(x4<=x1&&x4>=x2) flag1 = flag2 = true;
-		}
-	}
-	else if(is_ver1)
-	{
-		c2 = y3 - grad2 * x3;
-		long double y_meet;
-		y_meet = grad2 * x1 + c2;
-		if(y_meet>=y1&&y_meet<=y2) flag1 = flag2 = true;
-		else if(y_meet<=y1&&y_meet>=y2) flag1 = flag2 = true;
-		/*
-		c2 = y3 - grad2 * x3;
-		if((x3-x1)*(x4-x1)<=0) flag1 = true;
-		if((grad2 * x1 + c2 - y1)*(grad2 * x2 + c2 - y2)<=0) flag2 = true;
-		*/
-	}
-	else if(is_ver2)
-	{
-		c1 = y1 - grad1 * x1;
-		long double y_meet;
-		y_meet = grad1 * x3 + c1;
-		if(y_meet>=y3&&y_meet<=y4) flag1 = flag2 = true;
-		else if(y_meet<=y3&&y_meet>=y4) flag1 = flag2 = true;
-		/*
-		c1 = y1 - grad1 * x1;
-		if((grad1 * x3 + c1 - y3)*(grad1 * x4 + c1 - y4)<=0) flag1 = true;
-		if((x1-x3)*(x2-x3)<=0) flag2 = true;
-		*/
-	}
-	else
-	{
-		c1 = y1 - grad1 * x1;
-		c2 = y3 - grad2 * x3;
-		long double x_meet;
-		x_meet = (c2 - c1) / (grad1 - grad2);
-		if(x_meet>=x3&&x_meet<=x4)
-		{
-			if(x_meet>=x1&&x_meet<=x2) flag1 = flag2 = true;
-			else if(x_meet<=x1&&x_meet>=x2) flag1 = flag2 = true;
-		}
-		else if(x_meet<=x3&&x_meet>=x4)
-		{
-			if(x_meet>=x1&&x_meet<=x2) flag1 = flag2 = true;
-			else if(x_meet<=x1&&x_meet>=x2) flag1 = flag2 = true;
-		}
+		result = true;
 		/*
 		if((grad1 * x3 + c1 - y3)*(grad1 * x4 + c1 - y4)<=0) flag1 = true;
 		if((grad2 * x1 + c2 - y1)*(grad2 * x2 + c2 - y2)<=0) flag2 = true;
