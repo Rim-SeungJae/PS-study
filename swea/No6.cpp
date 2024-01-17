@@ -21,8 +21,9 @@ bool is_number(string str)
 int init(int idx, Node * tree)
 {
 	tree[idx].h = tree[tree[idx].p].h+1;
-	if(tree[idx].lc == 0) return  1;
-	return tree[idx].sub_size = init(tree[idx].lc,tree) + init(tree[idx].rc,tree);
+	if(tree[idx].lc == 0) return tree[idx].sub_size = 1;
+	else if(tree[idx].rc == 0) return tree[idx].sub_size = init(tree[idx].lc,tree) + 1;
+	return tree[idx].sub_size = init(tree[idx].lc,tree) + init(tree[idx].rc,tree) + 1;
 }
 
 int main(int argc, char** argv)
@@ -45,7 +46,7 @@ int main(int argc, char** argv)
 	/*
 	   여러 개의 테스트 케이스가 주어지므로, 각각을 처리합니다.
 	*/
-	for(test_case = 1; test_case <= 1; ++test_case)
+	for(test_case = 1; test_case <= T; ++test_case)
 	{
         Node tree[10100];
 		//int parent[10100][14];
