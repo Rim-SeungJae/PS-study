@@ -1,5 +1,7 @@
 #include<iostream>
 #include<queue>
+#include<algorithm>
+#include<array>
 
 using namespace std;
 
@@ -32,6 +34,7 @@ int main(int argc, char** argv)
             cin >> a[i];
         }
         cin >> k;
+        /*
         priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,greater<pair<int,pair<int,int>>>> pq;
         pq.push(make_pair(0,make_pair(1,0)));
         int result;
@@ -45,13 +48,41 @@ int main(int argc, char** argv)
                 break;
             }
             pq.pop();
+            pq.push(make_pair(dist+1,make_pair(d,x+d)));
             for(int i=0;i<n;i++)
             {
-                if((long long)d * a[i] + x <= k)pq.push(make_pair(dist,make_pair(d * a[i],x)));
+                if((long long)d * a[i] + x <= k && (k-x)%(d*a[i]) == 0 ) pq.push(make_pair(dist,make_pair(d * a[i],x)));
             }
-            pq.push(make_pair(dist+1,make_pair(d,x+d)));
         }
+        */
+       
+        int result;
+        deque<array<int,3>> dq;
+        array<int,3> arr = {0,1,0};
+        dq.push_back(arr);
+        while(!dq.empty())
+        {
+            auto tmp = dq.front();
+            dq.pop_front();
+            int dist = tmp[0], d = tmp[1], x = tmp[2];
+            if(x == k)
+            {
+                result = dist;
+                break;
+            }
+            dq.push_back(array<int,3>({dist+1,d,x+d}));
+            for(int i=0;i<n;i++)
+            {
+                if((long long)d * a[i] + x <= k && (k-x)%(d*a[i]) == 0)
+                {
+                    dq.push_front(array<int,3>({dist,d*a[i],x}));
+                }
+            }
+
+        }
+        
         cout << '#' <<test_case << ' ' << result << '\n';
+        
 	}
 	return 0;//정상종료시 반드시 0을 리턴해야합니다.
 }
