@@ -34,28 +34,28 @@ int main(int argc, char** argv)
             cin >> a[i];
         }
         cin >> k;
-        /*
-        priority_queue<pair<int,pair<int,int>>,vector<pair<int,pair<int,int>>>,greater<pair<int,pair<int,int>>>> pq;
-        pq.push(make_pair(0,make_pair(1,0)));
+        
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        pq.push(make_pair(0,k));
         int result;
         while(!pq.empty())
         {
             auto tmp = pq.top();
-            int dist = tmp.first, d = tmp.second.first, x = tmp.second.second;
-            if(x == k)
+            int dist = tmp.first, x = tmp.second;
+            if(x == 0)
             {
                 result = dist;
                 break;
             }
             pq.pop();
-            pq.push(make_pair(dist+1,make_pair(d,x+d)));
+            pq.push(make_pair(dist+x,0));
             for(int i=0;i<n;i++)
             {
-                if((long long)d * a[i] + x <= k && (k-x)%(d*a[i]) == 0 ) pq.push(make_pair(dist,make_pair(d * a[i],x)));
+                pq.push(make_pair(dist + x%a[i],x/a[i]));
             }
         }
-        */
-       
+        
+        /*
         int result;
         deque<array<int,3>> dq;
         array<int,3> arr = {0,1,0};
@@ -80,7 +80,7 @@ int main(int argc, char** argv)
             }
 
         }
-        
+        */
         cout << '#' <<test_case << ' ' << result << '\n';
         
 	}
