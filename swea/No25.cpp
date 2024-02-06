@@ -10,10 +10,12 @@ void get_fail(string s)
 {
     fill(Pi,&Pi[500005],0);
     for (int i = 1, j = 0; i < s.length(); i++) {
-        while (j > 0 && s[i] != s[j])
-            j = Pi[j - 1];
+        while (j > 0 && s[i] != s[j]) j = Pi[j - 1];
         if (s[i] == s[j])
-            Pi[i] = ++j;
+        {
+            j++;
+            Pi[i] = j;
+        }
     }
 }
 
@@ -48,8 +50,7 @@ int main(int argc, char** argv)
         int cnt=0;
 
         for (int i = 0, j = 0; i < b.length(); i++) {
-            while (j > 0 && b[i] != s[j])
-                j = Pi[j - 1];
+            while (j > 0 && b[i] != s[j]) j = Pi[j - 1];
             if (b[i] == s[j]) { 
                 if (j == s.length() - 1) { 
                     cnt++;
