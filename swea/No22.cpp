@@ -1,19 +1,20 @@
 #include<iostream>
 #include<vector>
-#include<queue>
 #include<algorithm>
+#include<queue>
 
 using namespace std;
 
-long long dist[200002];
-int pre[200002];
+int dist[50005],rdist[50005];
+vector<vector<pair<int,int>>> graph;
+vector<vector<pair<int,int>>> rgraph;
 
 int main(int argc, char** argv)
 {
-	int test_case;
-	int T;
     ios::sync_with_stdio(false);
     cin.tie(NULL);
+	int test_case;
+	int T;
 	/*
 	   아래의 freopen 함수는 input.txt 를 read only 형식으로 연 후,
 	   앞으로 표준 입력(키보드) 대신 input.txt 파일로부터 읽어오겠다는 의미의 코드입니다.
@@ -30,42 +31,63 @@ int main(int argc, char** argv)
 	*/
 	for(test_case = 1; test_case <= T; ++test_case)
 	{
-        int n,m;
-        cin >> n >> m;
-        vector<vector<pair<int,int>>> graph;
+        int n,m,x;
+        cin >> n >> m >> x;
         graph.assign(n+1,vector<pair<int,int>>());
+        rgraph.assign(n+1,vector<pair<int,int>>());
+        fill(&dist[0],&dist[n+1],2000000000);
+        fill(&rdist[0],&rdist[n+1],2000000000);
         for(int i=0;i<m;i++)
         {
-            int a,b,w;
-            cin >> a >> b >> w;
-            graph[a].push_back(make_pair(b,w));
-            graph[b].push_back(make_pair(a,w));
+            int s,e,t;
+            cin >> s >> e >> t;
+            graph[s].push_back(make_pair(e,t));
+            rgraph[e].push_back(make_pair(s,t));
         }
-        fill(&dist[0],&dist[200002],20000000000002);
-        priority_queue<pair<long long,int>,vector<pair<long long,int>>,greater<pair<long long,int>>> pq;
-        pq.push(make_pair(0,1));
-        dist[1] = 0;
+
+        priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+        pq.push(make_pair(0,x));
+        dist[x] = 0;
         while(!pq.empty())
         {
-            long long d = pq.top().first, cur = pq.top().second;
+            int d,cur;
+            d = pq.top().first;
+            cur = pq.top().second;
             pq.pop();
-            if(dist[cur] != d) continue;
+            if(d != dist[cur]) continue;
             for(int i=0;i<graph[cur].size();i++)
             {
-                if(d + graph[cur][i].second <= dist[graph[cur][i].first])
+                if(d + graph[cur][i].second < dist[graph[cur][i].first])
                 {
                     dist[graph[cur][i].first] = d + graph[cur][i].second;
-                    pre[graph[cur][i].first] = cur;
                     pq.push(make_pair(d + graph[cur][i].second,graph[cur][i].first));
                 }
             }
         }
-        long long result = 0;
-        for(int i=2;i<=n;i++)
+        pq.push(make_pair(0,x));
+        rdist[x] = 0;
+        while(!pq.empty())
         {
-            result += dist[i] - dist[pre[i]];
+            int d,cur;
+            d = pq.top().first;
+            cur = pq.top().second;
+            pq.pop();
+            if(d != rdist[cur]) continue;
+            for(int i=0;i<rgraph[cur].size();i++)
+            {
+                if(d + rgraph[cur][i].second < rdist[rgraph[cur][i].first])
+                {
+                    rdist[rgraph[cur][i].first] = d + rgraph[cur][i].second;
+                    pq.push(make_pair(d + rgraph[cur][i].second,rgraph[cur][i].first));
+                }
+            }
         }
-        cout << '#' << test_case << ' ' << result << '\n';
+        int max = 0;
+        for(int i=1;i<=n;i++)
+        {
+            if(max < dist[i] + rdist[i]) max = dist[i]+rdist[i];
+        }
+        cout << '#' << test_case << ' ' << max << '\n';
 	}
 	return 0;//정상종료시 반드시 0을 리턴해야합니다.
 }
