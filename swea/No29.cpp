@@ -2,6 +2,7 @@
 #include<string>
 #include<vector>
 #include<algorithm>
+#include<set>
 
 using namespace std;
 
@@ -31,14 +32,18 @@ int main(int argc, char** argv)
         int k;
         cin >> k;
         cin >> str;
-        vector<string> v;
+        set<string> s;
         for(int i=0;i<str.size();i++)
         {
-            v.push_back(str.substr(i));
+            for(int j=1;i+j<=str.size();j++)
+            {
+                s.insert(str.substr(i,j));
+            }
             // cout << v[i] << '\n';
         }
-        sort(v.begin(),v.end());
-        cout << '#' << test_case << ' ' << v[k-1] << '\n';
+        auto iter = s.begin();
+        for(int i=0;i<k-1;i++) iter++;
+        cout << '#' << test_case << ' ' << *iter << '\n';
 	}
 	return 0;//정상종료시 반드시 0을 리턴해야합니다.
 }
