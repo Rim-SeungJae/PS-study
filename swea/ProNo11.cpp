@@ -156,30 +156,28 @@ void add(int mID, int mRow, int mCol)
             }
         }
     }
-    
+
     // dijkstra
-    priority_queue<pair<int,int>> pq;
-    vector<int> connected;
-    pq.push(make_pair(0,mID));
-    dist[mID][mID] = 0;
-    while(!pq.empty())
-    {
-        int cur = pq.top().second;
-        int d = pq.top().first;
-        pq.pop();
-        if(d != dist[mID][cur]) continue;
-        for(int i=0;i<g[cur].size();i++)
-        {
-            auto next = g[cur][i];
-            if(dist[mID][next.second] > d+next.first)
-            {
-                dist[mID][next.second] = d+next.first;
-                dist[next.second][mID] = d+next.first;
-                connected.push_back(next.second);
-                pq.push(make_pair(d+next.first,next.second));
-            }
-        }
-    }
+    // priority_queue<pair<int,int>> pq;
+    // pq.push(make_pair(0,mID));
+    // dist[mID][mID] = 0;
+    // while(!pq.empty())
+    // {
+    //     int cur = pq.top().second;
+    //     int d = pq.top().first;
+    //     pq.pop();
+    //     if(d != dist[mID][cur]) continue;
+    //     for(int i=0;i<g[cur].size();i++)
+    //     {
+    //         auto next = g[cur][i];
+    //         if(dist[mID][next.second] > d+next.first)
+    //         {
+    //             dist[mID][next.second] = d+next.first;
+    //             dist[next.second][mID] = d+next.first;
+    //             pq.push(make_pair(d+next.first,next.second));
+    //         }
+    //     }
+    // }
     
 	return;
 }
@@ -187,14 +185,40 @@ void add(int mID, int mRow, int mCol)
 int distance(int mFrom, int mTo)
 {
     if(mFrom>mTo) swap(mFrom,mTo);
-    int ret = dist[mTo][mFrom];
-    for(int i=0;i<idcnt;i++)
+    // int ret = dist[mTo][mFrom];
+    // for(int i=0;i<idcnt;i++)
+    // {
+    //     if(dist[i][mTo] != IMAX && dist[i][mFrom] != IMAX)
+    //     {
+    //         if(dist[i][mTo] + dist[i][mFrom] < ret) ret = dist[i][mTo] + dist[i][mFrom];
+    //     }
+    // }
+    // if(ret != IMAX) return ret;
+    // return -1;
+   
+    // dijkstra
+    priority_queue<pair<int,int>,vector<pair<int,int>>,greater<pair<int,int>>> pq;
+    fill(&dist[mFrom][0],&dist[mFrom][200],IMAX);
+    pq.push(make_pair(0,mFrom));
+    dist[mFrom][mFrom] = 0;
+    while(!pq.empty())
     {
-        if(dist[i][mTo] != IMAX && dist[i][mFrom] != IMAX)
+        int cur = pq.top().second;
+        int d = pq.top().first;
+        pq.pop();
+        if(cur == mTo) break;
+        if(d != dist[mFrom][cur]) continue;
+        for(int i=0;i<g[cur].size();i++)
         {
-            if(dist[i][mTo] + dist[i][mFrom] < ret) ret = dist[i][mTo] + dist[i][mFrom];
+            auto next = g[cur][i];
+            if(dist[mFrom][next.second] > d+next.first)
+            {
+                dist[mFrom][next.second] = d+next.first;
+                dist[next.second][mFrom] = d+next.first;
+                pq.push(make_pair(d+next.first,next.second));
+            }
         }
     }
-    if(ret != IMAX) return ret;
+    if(dist[mFrom][mTo] != IMAX) return dist[mFrom][mTo];
     return -1;
 }
