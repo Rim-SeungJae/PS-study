@@ -79,7 +79,7 @@ static bool run()
 int main()
 {
 	setbuf(stdout, NULL);
-	// freopen("sample_input.txt", "r", stdin);
+	freopen("C:/Users/dipreez/Desktop/SWEA/PS-study/swea/sample_input.txt", "r", stdin);
 
 	int T, MARK;
 	scanf("%d %d", &T, &MARK);
@@ -95,6 +95,7 @@ int main()
 
 #include<queue>
 #include<unordered_map>
+#include<algorithm>
 
 using namespace std;
 
@@ -153,14 +154,17 @@ void segw_update(int l,int r,int idx,int target,int val)
 void init(int N, int mPopulation[])
 {
     n=N;
-    for(int i=0;i<n-1;i++)
+    while(!pq.empty()) pq.pop();
+    for(int i=0;i<n;i++)
     {
         pop[i] = mPopulation[i];
+    }
+    for(int i=0;i<n-1;i++)
+    {
         w[i] = mPopulation[i] + mPopulation[i+1];
         rNum[i] = 1;
         pq.push(make_pair(w[i],-i));
     }
-    pop[n-1] = mPopulation[n-1];
     segw_init(0,n-2,1);
 	return;
 }
@@ -186,39 +190,61 @@ int calculate(int mFrom, int mTo)
 	return segw_get(0,n-2,1,mFrom,mTo-1);
 }
 
-int divide(int mFrom, int mTo, int K)
+bool check_exist(int mFrom,int mTo,int C)
 {
-    int group[10001],parent[10001];
-    priority_queue<node> divide_queue;
     for(int i=mFrom;i<=mTo;i++)
     {
-        group[i] = pop[i];
-        parent[i] = i;
+        int sum = 0;
+        for(int j=i;j<=mTo;j++)
+        {
+            sum += pop[j];
+            if(sum == C) return true;
+        }
     }
-    for(int i=mFrom;i<mTo;i++) divide_queue.push(node(i,i+1,group[i] + group[i+1]));
-    int cnt = mTo - mFrom + 1;
-    while(cnt > K)
+    return false;
+}
+
+int divide(int mFrom, int mTo, int K)
+{
+    int l=0,r=1;
+    for(int i=mFrom;i<=mTo;i++)
     {
-        auto cur = divide_queue.top();
-        divide_queue.pop();
-        int l = cur.l,r = cur.r,val = cur.val;
-        while(parent[l] != l) l = parent[l];
-        while(parent[r] != r) r = parent[r];
-        if(l == r || val != group[l] + group[r]) continue;
-        cnt--;
-        //group[cur.l] = group[cur.r] = cur.val;
-        group[l] = val;
-        parent[r] = l;
-        int left = l-1,right = r+1;
-        while(left>=mFrom && parent[left]!=left) left--;
-        while(right<=mTo && parent[right]!=right) right++;
-        if(left >= mFrom) divide_queue.push(node(left,l,group[left] + group[l]));
-        if(right <= mTo) divide_queue.push(node(l,right,group[l] + group[right]));
+        r+=pop[i];
+        if(pop[i] > l) l = pop[i];
     }
-    int max_group = 0;
-    for(int i=mFrom;i<mTo;i++)
+    int ret = 2000000000;
+    while(l<=r)
     {
-        if(group[i] > max_group) max_group = group[i];
+        int mid = l + (r-l)/2;
+        int cnt = 1,sum = 0,sum_max = 0;
+        for(int i=mFrom;i<=mTo;i++)
+        {
+            if(sum + pop[i] > mid)
+            {
+                // if(mid == 784213)
+                // {
+                //     if(sum == 784213)printf("hi\n");
+                // }
+                if(sum > sum_max) sum_max = sum;
+                sum = 0;
+                cnt++;
+            }
+            sum+=pop[i];
+        }
+        if(sum > sum_max) sum_max = sum;
+        if(cnt == K)
+        {
+            r = mid - 1;
+            ret = sum_max;
+        }
+        else if(cnt > K)
+        {
+            l = mid + 1;
+        }
+        else{
+            r = mid - 1;
+            ret = sum_max;
+        }
     }
-	return max_group;
+    return ret;
 }

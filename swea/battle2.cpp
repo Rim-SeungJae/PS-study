@@ -109,6 +109,7 @@ bool cmp(int a,int b)
 
 set<int,cmp_abil> league[10];
 set<int,cmp_abil>::iterator mid[10];
+priority_queue<int,vector<int>,cmp_abil> pq;
 
 void init(int N, int L, int mAbility[])
 {
@@ -131,6 +132,8 @@ void init(int N, int L, int mAbility[])
         mid[i] = league[i].begin();
         advance(mid[i],n/l/2);
     }
+    pq.push(0);
+    pq.push(1);
 }
 
 int move()
