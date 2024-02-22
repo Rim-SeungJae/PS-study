@@ -67,7 +67,7 @@ int main()
     
     start = clock();
     setbuf(stdout, NULL);
-    // freopen("C:/Users/callo/ps/PS-study/swea/sample_input(10).txt", "r", stdin);
+    freopen("C:/Users/callo/Downloads/sample_input(10).txt", "r", stdin);
     int T, MARK;
     scanf("%d %d", &T, &MARK);
 
