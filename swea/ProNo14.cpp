@@ -60,7 +60,7 @@ static bool run() {
 
 int main() {
 	setbuf(stdout, NULL);
-	//freopen("sample_input.txt", "r", stdin);
+	freopen("C:/Users/callo/Downloads/sample_input(12).txt", "r", stdin);
 
 	int T, MARK;
 	scanf("%d %d", &T, &MARK);
@@ -80,36 +80,43 @@ using namespace std;
 
 unordered_map<int,int> id2pos;
 unordered_map<int,int> pos2id;
-int tree[40040];
-int subsum[40040];
+int tree[8040],subsum[8040],parent[8040];
+pair<int,int> children[8040];
+int nCnt;
 
 void init(int mId, int mNum) {
     id2pos.clear();
     pos2id.clear();
-    fill(tree,&tree[40040],0);
-    fill(subsum,&subsum[40040],0);
+    fill(tree,&tree[8040],0);
+    fill(subsum,&subsum[8040],0);
+    fill(parent,&parent[8040],0);
+    fill(children,&children[8040],make_pair(0,0));
     id2pos[mId] = 1;
     pos2id[1] = mId;
     tree[1] = mNum;
     subsum[1] = mNum;
+    parent[1] = 0;
+    nCnt = 2;
 	return;
 }
 
 int add(int mId, int mNum, int mParent) {
     int Ppos = id2pos[mParent];
-    if(tree[Ppos * 2] != 0 && tree[Ppos * 2 + 1] != 0) return -1;
-    int Cpos;
-    if(tree[Ppos * 2] != 0) Cpos = Ppos*2+1;
-    else Cpos = Ppos*2;
+    if(children[Ppos].first != 0 && children[Ppos].second != 0) return -1;
+    int Cpos = nCnt;
+    if(children[Ppos].first != 0) children[Ppos].second = Cpos;
+    else children[Ppos].first = Cpos;
     tree[Cpos] = mNum;
+    parent[Cpos] = Ppos;
     id2pos[mId] = Cpos;
     pos2id[Cpos] = mId;
     int tmp = Cpos;
     while(tmp)
     {
         subsum[tmp] += mNum;
-        tmp/=2;
+        tmp=parent[tmp];
     }
+    nCnt++;
     return  subsum[Ppos];
 }
 
@@ -117,11 +124,14 @@ void tree_del(int pos)
 {
     tree[pos] = 0;
     subsum[pos] = 0;
+    if(children[parent[pos]].first == pos)children[parent[pos]].first = 0;
+    else children[parent[pos]].second = 0;
+    parent[pos] = 0;
     int mId = pos2id[pos];
     id2pos.erase(mId);
     pos2id.erase(pos);
-    if(tree[pos*2] != 0) tree_del(pos*2);
-    if(tree[pos*2+1] != 0) tree_del(pos*2+1);
+    if(children[pos].first != 0) tree_del(children[pos].first);
+    if(children[pos].second != 0) tree_del(children[pos].second);
 }
 
 int remove(int mId) {
@@ -129,11 +139,11 @@ int remove(int mId) {
     if(target == id2pos.end()) return -1;
     int pos = target->second;
     int ret = subsum[pos];
-    int tmp = pos/2;
+    int tmp = parent[pos];
     while(tmp)
     {
         subsum[tmp]-=ret;
-        tmp/=2;
+        tmp=parent[tmp];
     }
     tree_del(pos);
 	return ret;
@@ -142,60 +152,11 @@ int remove(int mId) {
 
 int cnt;
 
-int recur(int m,int k,int pos)
-{
-    if (cnt > m || tree[pos] > k) {
-        cnt = m + 1;
-        return 0;
-    }
-    int left = 0;
-    int right = 0;
-    if (tree[pos*2] != 0) left = recur(m,k,pos*2);
-    if (tree[pos*2+1] != 0) right = recur(m,k,pos*2+1);
-    if (cnt <= m) {
-        if(left == 0 && right == 0) return tree[pos];
-        if(tree[pos] + left > k && tree[pos] + right > k)
-        {
-            cnt+=2;
-            return tree[pos];
-        }
-        if (tree[pos] + left > k && right != 0)
-        {
-            cnt++;
-            return tree[pos] + right;
-        }
-        if(tree[pos] + right > k && left != 0)
-        {
-            cnt++;
-            return  tree[pos] + left;
-        }
-        if (tree[pos] + left + right > k)
-        {
-            if (left > right && right != 0)
-            {
-                cnt++;
-                return tree[pos] + right;
-            }
-            else
-            {
-                cnt++;
-                return tree[pos] + left;
-            }
-        }
-        return tree[pos] + left + right;
-    }
-    return 0;
-}
-
-int solve(int m,int k,int pos) {
-    if(cnt>m) return 0;
-    if (tree[pos] > k) {
-        cnt = m + 1;
-        return 0;
-    }
+int recur(int m,int k,int pos) {
+    if (tree[pos] > k) cnt = m + 1;
     int left = 0, right = 0;
-    if (tree[pos*2] != 0) left = solve(m,k,pos*2);
-    if (tree[pos*2+1] != 0) right = solve(m,k,pos*2+1);
+    if (cnt <= m && children[pos].first != 0) left = recur(m,k,children[pos].first);
+    if (cnt <= m && children[pos].second != 0) right = recur(m,k,children[pos].second);
     if (cnt <= m) {
         if (tree[pos] + left > k)
         {
@@ -210,8 +171,8 @@ int solve(int m,int k,int pos) {
         if (tree[pos] + left + right > k)
         {
             cnt++;
-            if (left > right) left = 0;
-            else right = 0;
+            if (left > right) return tree[pos] + right;
+            else return tree[pos] + left;
         }
         return tree[pos] + left + right;
     }
