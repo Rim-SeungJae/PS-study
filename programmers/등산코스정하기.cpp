@@ -44,6 +44,7 @@ vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector
             q.push(gates[i]);
             visited[gates[i]] = true;
         }
+        int summit_min = 2000000000;
         while(!q.empty())
         {
             int cur = q.front();
@@ -53,14 +54,27 @@ vector<int> solution(int n, vector<vector<int>> paths, vector<int> gates, vector
                 int nxt = g[cur][i].first, w = g[cur][i].second;
                 if(w<=bound && !isgate[nxt] && !visited[nxt])
                 {
-                    if(issummit[nxt])
+                    if(issummit[nxt] && summit_min > nxt)
                     {
-                        answer
+                        summit_min = nxt;
                     }
-                    visited[nxt] = true;
-                    q.push(nxt);
+                    if(!issummit[nxt])
+                    {
+                        visited[nxt] = true;
+                        q.push(nxt);
+                    }
                 }
             }
+        }
+        if(summit_min == 2000000000)
+        {
+            l = mid+1;
+        }
+        else
+        {
+            r = mid-1;
+            answer[0] = summit_min;
+            answer[1] = bound;
         }
     }
     
