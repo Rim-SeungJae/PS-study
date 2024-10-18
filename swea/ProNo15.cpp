@@ -60,7 +60,7 @@ static bool run() {
 
 int main() {
 	setbuf(stdout, NULL);
-	//freopen("sample_input.txt", "r", stdin);
+	freopen("C:/Users/dipreez/Downloads/sample_input(5).txt", "r", stdin);
 
 	int T, MARK;
 	scanf("%d %d", &T, &MARK);
@@ -80,7 +80,7 @@ int main() {
 using namespace std;
 
 unordered_map<int,int> id2pos;
-set<pair<int,int>> files[12000];
+set<pair<int,int>> files[12020];
 map<int,int> chunks;
 int file_cnt,n,total_size;
 
@@ -132,20 +132,17 @@ int remove(int mId) {
         int s = iter->first,e = iter->second;
         total_size -= e - s + 1;
         auto target = chunks.lower_bound(s);
-        if(target->first == s && target->second == e)
-        {
-            chunks.erase(target);
-            continue;
-        }
         if(target->first != s) target--;
-        if(target->second != e)
+        int first = target->first,second = target->second;
+        chunks.erase(target);
+        if(first == s && second == e) continue;
+        if(second!= e)
         {
-            chunks.insert(target,make_pair(e+1,target->second));
-            chunks.erase(target);
+            chunks.insert(make_pair(e+1,second));
         }
-        if(target->first != s)
+        if(first != s)
         {
-            target->second = s - 1;
+            chunks.insert(make_pair(first,s-1));
         }
     }
     files[pos].clear();
@@ -163,7 +160,7 @@ int count(int mStart, int mEnd) {
         {
             for(auto iter = files[i].begin();iter!=files[i].end();iter++)
             {
-                if(mStart <= iter->first && mEnd >= iter->first || mStart <= iter->second && mEnd >= iter->second)
+                if(!(mStart>iter->second || mEnd<iter->first))
                 {
                     ret++;
                     break;
