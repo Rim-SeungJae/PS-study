@@ -1,36 +1,44 @@
 #include<cstdio>
 #include<algorithm>
+#include<vector>
 using namespace std;
 
-int seg[400004],arr[100001];
+int arr[100001];
+pair<int,int> seg[400004];
 
-int init(int l,int r,int idx)
+pair<int,int> init(int l,int r,int idx)
 {
-    if(l==r) return seg[idx] = l;
-    int mid = l+(r-l)/2;
-    int a = init(l,mid,2*idx);
-    int b = init(mid+1,r,2*idx+1);
-    return seg[idx] = arr[a]<=arr[b]?a:b;
+    if(l == r)
+    {
+        return seg[idx] = make_pair(arr[l],l);
+    }
+    int mid = l + (r-l)/2;
+    pair<int,int> a = init(l,mid,idx*2);
+    pair<int,int> b = init(mid+1,r,2*idx+1);
+    return seg[idx] = min(a,b);
 }
 
-int query(int l,int r,int ql,int qr,int idx)
+pair<int,int> query(int l,int r,int ql,int qr,int idx)
 {
-    if(r<ql || l>qr) return 0;
+    if(qr<l || ql>r) return make_pair(2000000000,-1);
     if(l>=ql && r<=qr) return seg[idx];
-    int mid = l+(r-l)/2;
-    int a = query(l,mid,ql,qr,2*idx);
-    int b = query(mid+1,r,ql,qr,2*idx+1);
-    return arr[a]<=arr[b]?a:b;
+    int mid = l + (r-l)/2;
+    pair<int,int> a = query(l,mid,ql,qr,idx*2);
+    pair<int,int> b = query(mid+1,r,ql,qr,idx*2+1);
+    return min(a,b);
 }
 
-int update(int l,int r,int u,int idx,int val)
+pair<int,int> update(int l,int r,int u,int idx,int val)
 {
-    if(l>u || r<u) return seg[idx];
-    if(l == r) return seg[idx];
-    int mid = l+(r-l)/2;
-    int a = update(l,mid,u,2*idx,val);
-    int b = update(mid+1,r,u,2*idx+1,val);
-    return seg[idx] = arr[a]<=arr[b]?a:b;
+    if(u<l || u>r) return seg[idx];
+    if(l == r)
+    {
+        return seg[idx] = make_pair(val,l);
+    }
+    int mid = l + (r-l)/2;
+    pair<int,int> a = update(l,mid,u,idx*2,val);
+    pair<int,int> b = update(mid+1,r,u,idx*2+1,val);
+    return seg[idx] = min(a,b);
 }
 
 int main()
@@ -57,7 +65,7 @@ int main()
             update(1,n,u,1,val);
         }
         else{
-            printf("%d\n",query(1,n,1,n,1));
+            printf("%d\n",query(1,n,1,n,1).second);
         }
     }
 }
