@@ -1,48 +1,45 @@
 #include<cstdio>
-#include<vector>
 #include<algorithm>
+#include<vector>
 #include<queue>
-
+#include<tuple>
 using namespace std;
 
 int main()
 {
-
-    int n,arr[501][501];
-    scanf("%d",&n);
-    for(int i=0;i<n;i++)
+    int m,n;
+    scanf("%d %d",&m,&n);
+    vector<vector<int>> arr(m, vector<int>(n));
+    for(int i=0;i<m;i++)
     {
         for(int j=0;j<n;j++)
         {
             scanf("%d",&arr[i][j]);
         }
     }
-    int in[250001] = {0,};
-    vector<vector<int>> graph(n,vector<int>());
-    for(int i=0;i<n;i++)
+    priority_queue<tuple<int,int,int>> pq;
+    vector<vector<int>> visited(m, vector<int>(n, 0));
+    vector<int> dx = {1, 0, -1, 0};
+    vector<int> dy = {0, 1, 0, -1};
+    visited[0][0] = 1;
+    pq.push(make_tuple(arr[0][0], 0, 0));
+    while(!pq.empty())
     {
-        for(int j=0;j<n;j++)
+        auto [val, x, y] = pq.top();
+        pq.pop();
+        for(int i=0;i<4;i++)
         {
-            if(i-1>=0 && arr[i-1][j] > arr[i][j])
+            int nx = x + dx[i];
+            int ny = y + dy[i];
+            if(nx >= 0 && nx < m && ny >= 0 && ny < n && arr[nx][ny] < arr[x][y])
             {
-                graph[i*n+j].push_back((i-1)*n+j);
-                in[(i-1)*n+j]++;
-            }
-            if(j-1>=0 && arr[i][j-1] > arr[i][j])
-            {
-                graph[i*n+j].push_back(i*n+j-1);
-                in[i*n+j-1]++;
-            }
-            if(i+1<n && arr[i+1][j] > arr[i][j])
-            {
-                graph[i*n+j].push_back((i+1)*n+j);
-                in[(i+1)*n+j]++;
-            }
-            if(j+1<n && arr[i][j+1] > arr[i][j])
-            {
-                graph[i*n+j].push_back(i*n+j+1);
-                in[i*n+j+1]++;
+                if(visited[nx][ny] == 0) pq.push(make_tuple(arr[nx][ny], nx, ny));
+                visited[nx][ny] += visited[x][y];
             }
         }
+
     }
+    printf("%d\n", visited[m-1][n-1]);
+    return 0;
+
 }

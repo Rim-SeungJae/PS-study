@@ -1,35 +1,32 @@
 #include<cstdio>
+#include<algorithm>
+#include<vector>
 
 using namespace std;
 
 int main()
 {
-    int dp[101],arr[101][2];
-    bool cross[101][101] = {0,};
     int n;
-    scanf("%d",&n);
-    for(int i=0;i<n;i++)
+    scanf("%d", &n);
+    vector<pair<int,int>> arr(n);
+    for(int i = 0; i < n; i++)
     {
-        scanf("%d %d",&arr[i][0],&arr[i][1]);
+        scanf("%d %d", &arr[i].first, &arr[i].second);
     }
-    for(int i=0;i<n;i++)
-    {
-        for(int j=0;j<n;j++)
-        {
-            if(i == j) continue;
-            if((arr[i][0] - arr[j][0]) * (arr[i][1] - arr[j][1]) < 0) cross[i][j] = true;
-        }
-    }
-    dp[0] = 0;
+    sort(arr.begin(), arr.end());
+    vector<int> dp;
+    dp.push_back(arr[0].second);
     for(int i=1;i<n;i++)
     {
-        int cnt=0;
-        for(int j=0;j<i;j++)
+        if(arr[i].second > dp.back())
         {
-            cnt += cross[i][j];
+            dp.push_back(arr[i].second);
         }
-        if(cnt > dp[i-1]) dp[i] = cnt;
-        else dp[i] = dp[i-1];
+        else
+        {
+            auto it = lower_bound(dp.begin(), dp.end(), arr[i].second);
+            *it = arr[i].second;
+        }
     }
-    printf("%d",dp[n-1]);
+    printf("%d\n", n - dp.size());
 }
