@@ -1,55 +1,70 @@
 #include<cstdio>
+#include<iostream>
 #include<algorithm>
-#include<cstring>
 #include<vector>
-#include<queue>
 #include<string>
-
+#include<stack>
+#include<queue>
+#include<unordered_map>
 using namespace std;
 
 int main()
 {
-    int t;
-    scanf("%d",&t);
-    for(int test=0;test<t;test++)
+    int priority[256];
+    priority['+'] = priority['-'] = 2;
+    priority['*'] = priority['/'] = 1;
+    string expression;
+    cin >> expression;
+    stack<char> symbols;
+    stack<string> st;
+    for(char c : expression)
     {
-        queue<pair<int,string>> q;
-        bool visited[10000] = {0,};
-        int a,b;
-        scanf("%d %d",&a,&b);
-        q.push(make_pair(a,string("")));
-        visited[a] = true;
-        while(!q.empty())
+        if(c == '(')
         {
-            int cur = q.front().first;
-            string cmd = q.front().second;
-            q.pop();
-            if(cur == b)
+            symbols.push(c);
+        }
+        else if(c == ')')
+        {
+            while (!symbols.empty() && symbols.top() != '(')
             {
-                printf("%s\n",cmd.c_str());
-                break;
+                string tmp1 = st.top(); st.pop();
+                string tmp2 = st.top(); st.pop();
+                char sym = symbols.top(); symbols.pop();
+
+                tmp2.append(tmp1);
+                tmp2.append(string(1,sym));
+                st.push(tmp2);
             }
-            if(!visited[(cur*2)%10000])
+            if (!symbols.empty() && symbols.top() == '(')
+                symbols.pop();
+        }
+        else if(c == '+' || c == '-' || c == '*' || c == '/')
+        {
+            while (!symbols.empty() && symbols.top() != '(' && priority[symbols.top()] <= priority[c])
             {
-                visited[(cur*2)%10000] = true;
-                q.push(make_pair((cur*2)%10000,cmd+"D"));
+                string tmp1 = st.top(); st.pop();
+                string tmp2 = st.top(); st.pop();
+                char sym = symbols.top(); symbols.pop();
+
+                tmp2.append(tmp1);
+                tmp2.append(string(1,sym));
+                st.push(tmp2);
             }
-            if(!visited[(cur+9999)%10000])
-            {
-                q.push(make_pair((cur+9999)%10000,cmd+"S"));
-                visited[(cur+9999)%10000] = true;
-            }
-            if(!visited[(cur*10)%10000 + (cur/1000)])
-            {
-                visited[(cur*10)%10000 + (cur/1000)] = true;
-                q.push(make_pair((cur*10)%10000 + (cur/1000),cmd+"L"));
-            }
-            if(!visited[(cur/10) + (cur%10)*1000])
-            {
-                visited[(cur/10) + (cur%10)*1000] = true;
-                q.push(make_pair((cur/10) + (cur%10)*1000,cmd+"R"));
-            }
-            
+            symbols.push(c);
+        }
+        else{
+            st.push(string(1,c));
         }
     }
+    while (!symbols.empty())
+    {
+        string tmp1 = st.top(); st.pop();
+        string tmp2 = st.top(); st.pop();
+        char sym = symbols.top(); symbols.pop();
+
+        tmp2.append(tmp1);
+        tmp2.append(string(1,sym));
+        st.push(tmp2);
+    }
+    cout << st.top();
 }
