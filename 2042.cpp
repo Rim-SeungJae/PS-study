@@ -2,38 +2,43 @@
 
 using namespace std;
 
-long long seg[4000010];
-long long tmp[1000010];
+long long int arr[1000001],seg[4000004];
 
-long long init(int start,int end,int idx)
+void init(int idx,int l,int r)
 {
-    if(start == end)
+    if(l == r)
     {
-        seg[idx] = tmp[start];
-        return seg[idx];
+        seg[idx] = arr[l];
+        return;
     }
-    int mid = (start+end)/2;
-    return seg[idx] = init(start,mid,idx*2) + init(mid+1,end,idx*2+1);
+    int mid = (r-l)/2 + l;
+    init(idx*2,l,mid);
+    init(idx*2+1,mid+1,r);
+    seg[idx] = seg[idx*2] + seg[idx*2+1];
 }
 
-void change(int start,int end,int idx,int target,long long diff)
+void update(int idx,int l,int r,int tidx,long long val)
 {
-    if(start>target || end<target) return;
-    seg[idx] += diff;
-    if(start==end) return;
-    int mid = (start+end)/2;
-    change(start,mid,idx*2,target,diff);
-    change(mid+1,end,idx*2+1,target,diff);
+    if(r<tidx || l>tidx) return;
+    if(l == r && l == tidx)
+    {
+        seg[idx] = val;
+        return;
+    }
+    int mid = (r-l)/2 + l;
+    update(idx*2,l,mid,tidx,val);
+    update(idx*2+1,mid+1,r,tidx,val);
+    seg[idx] = seg[idx*2] + seg[idx*2+1];
 }
 
-long long sum(int start,int end,int idx,int l,int r)
+long long int query(int idx,int l,int r,int ql,int qr)
 {
-    if(start>r || end<l) return 0;
-    if(l<=start && end<=r) return seg[idx];
-    else{
-        int mid = (start+end)/2;
-        return sum(start,mid,idx*2,l,r) + sum(mid+1,end,idx*2+1,l,r);
-    }
+    if(r<ql || l>qr) return 0;
+    if(r<=qr && l>=ql) return seg[idx];
+    int mid = (r-l)/2 + l;
+    long long int a = query(idx*2,l,mid,ql,qr);
+    long long int b = query(idx*2+1,mid+1,r,ql,qr);
+    return a+b;
 }
 
 int main()
@@ -42,24 +47,19 @@ int main()
     scanf("%d %d %d",&n,&m,&k);
     for(int i=0;i<n;i++)
     {
-        scanf("%lld",&tmp[i]);
+        scanf("%lld",&arr[i]);
     }
-    init(0,n-1,1);
-
+    init(1,0,n);
     for(int i=0;i<m+k;i++)
     {
-        long long a,b,c;
+        long long int a,b,c;
         scanf("%lld %lld %lld",&a,&b,&c);
         if(a==1)
         {
-            change(0,n-1,1,b-1,c-tmp[b-1]);
-            tmp[b-1] = c;
+            update(1,0,n,b-1,c);
         }
         else{
-            printf("%lld\n",sum(0,n-1,1,b-1,c-1));
+            printf("%lld\n",query(1,0,n,b-1,c-1));
         }
     }
 }
-/*
-세그먼트 트리
-*/
